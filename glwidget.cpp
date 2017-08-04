@@ -16,7 +16,7 @@ GLWidget::~GLWidget()
 
 void GLWidget::initializeGL()
 {
-    model.LoadOBJ(":/External/Monkey.obj");
+    model.LoadOBJ(":/External/humanHeart.obj");
     if (!model.IsLoaded())
     {
         printf("Failure to load OBJ\n");
@@ -47,6 +47,9 @@ void GLWidget::paintGL()
     if (cameraTilt <= -0.5f * PI)
         cameraTilt = -0.5f * PI + 0.01f;
 
+    if(cameraRadius < 1.0f)
+        cameraRadius = 1.0f;
+
     viewMatrix.setToIdentity();
     QVector2D tiltVector(-cos(cameraTilt) * cameraRadius, -sin(cameraTilt) * cameraRadius);
     viewMatrix.lookAt(QVector3D(-cos(cameraAngle) * tiltVector.x(), tiltVector.y(), -sin(cameraAngle) * tiltVector.x()), QVector3D(0, 0, 0), QVector3D(0, 1, 0));
@@ -70,7 +73,7 @@ void GLWidget::paintGL()
 void GLWidget::resizeGL(int w, int h)
 {
     projectionMatrix.setToIdentity();
-    projectionMatrix.perspective(45.0f, GLfloat(w) / h, 0.01f, 100.0f);
+    projectionMatrix.perspective(45.0f, GLfloat(w) / h, 0.01f, 10000.0f);
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
@@ -105,5 +108,5 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 
 void GLWidget::wheelEvent(QWheelEvent* event)
 {
-    cameraRadius -= (float)event->delta() * 0.001f;
+    cameraRadius -= (float)event->delta() * 0.001f * cameraRadius;
 }
