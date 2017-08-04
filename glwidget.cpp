@@ -6,6 +6,11 @@ GLWidget::GLWidget(QWidget* parent) : QOpenGLWidget(parent)
     timer.setInterval(16);
     connect(&timer, SIGNAL(timeout()), this, SLOT(update()));
     timer.start();
+
+    QGLFormat format;
+    format.setVersion(3, 3);
+    format.setProfile(QGLFormat::CoreProfile);
+    format.setSampleBuffers(true);
 }
 
 GLWidget::~GLWidget()
@@ -16,7 +21,7 @@ GLWidget::~GLWidget()
 
 void GLWidget::initializeGL()
 {
-    model.LoadOBJ(":/External/humanHeart.obj");
+    model.LoadOBJ(":/External/Monkey.obj");
     if (!model.IsLoaded())
     {
         printf("Failure to load OBJ\n");
@@ -36,6 +41,7 @@ void GLWidget::initializeGL()
     glClearColor(0, 0, 0, 1);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_ALPHA_TEST);
+    glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
@@ -65,7 +71,7 @@ void GLWidget::paintGL()
     QMatrix4x4 normalMatrix = modelMatrix;
     normalMatrix.inverted();
     normalMatrix.transposed();
-    program.setUniformValue("modelView", normalMatrix);
+    program.setUniformValue("nMatrix", normalMatrix);
 
     glDrawArrays(GL_TRIANGLES, 0, model.vertices.count());
 }

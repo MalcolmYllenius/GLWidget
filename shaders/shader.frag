@@ -1,10 +1,10 @@
 //frag shader
 
-in vec4 color;
+varying vec4 color;
 
-out vec4 finalColor;
+//varying vec4 finalColor;
 
 void main()
 {
-    finalColor = color;
+    gl_FragColor = color;
 }
